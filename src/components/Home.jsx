@@ -77,7 +77,7 @@ const Home = () => {
                 </div>
 
             }
-     {!isMobile && <Model modelPath="https://omarruizramos.netlify.app/models/Robot.glb" setLoadingProgress={setLoadingProgress} loadingProgress={loadingProgress} gltf={gltf} setGltf={setGltf} secRef={secRef} />}
+     {!isMobile && <Model modelPath="/models/robot.glb" setLoadingProgress={setLoadingProgress} loadingProgress={loadingProgress} gltf={gltf} setGltf={setGltf} secRef={secRef} />}
       <NavbarHome secRef={secRef} isMobile={isMobile}/>
 
     </>
