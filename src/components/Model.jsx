@@ -220,6 +220,7 @@ const AnimatedModel = ({ gltf,setGltf,modelPath, playAnimationIndex, modelPositi
                 console.log("Model loaded successfully!", gltfData);
                 gltfData.scene.rotation.y = Math.PI; // Rotate 180° globally
                 setGltf(gltfData);
+                setLoadingProgress(100); 
                 console.log("gltf state updated with loaded model.");
             },
             (progress) => {
@@ -239,8 +240,7 @@ const AnimatedModel = ({ gltf,setGltf,modelPath, playAnimationIndex, modelPositi
 
         // Cleanup function for GLTFLoader (optional, but good practice if component unmounts quickly)
         return () => {
-            // You might want to dispose of the loader or any loaded assets here if necessary
-            // For now, simple console log for unmount
+            // Simple console log for unmount
             console.log("AnimatedModel component unmounted or modelPath changed, cleaning up loader.");
         };
 
