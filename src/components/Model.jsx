@@ -8,7 +8,6 @@ import gsap from 'gsap';
 import { DRACOLoader } from 'three-stdlib';
 
 
-
 // Main model component
 const Model = ({ modelPath, secRef,loadingProgress,setLoadingProgress,gltf,setGltf }) => {
     const [playAnimationIndex, setPlayAnimationIndex] = useState(null);
@@ -21,6 +20,12 @@ const Model = ({ modelPath, secRef,loadingProgress,setLoadingProgress,gltf,setGl
         y: 2,
         z: 0
     });
+
+    // Debugging: Log when Model component mounts
+    useEffect(() => {
+        console.log("Model component mounted. modelPath:", modelPath);
+    }, [modelPath]);
+
 
     const handlePlayAnimation = (index) => {
         setPlayAnimationIndex(index);
@@ -146,7 +151,7 @@ const Model = ({ modelPath, secRef,loadingProgress,setLoadingProgress,gltf,setGl
 
     return (
         <>
-           
+            
             <Canvas
                 shadows={true}
                 style={{
@@ -173,7 +178,15 @@ const Model = ({ modelPath, secRef,loadingProgress,setLoadingProgress,gltf,setGl
                     intensity={1}
                     castShadow={true}
                 />
-                <AnimatedModel modelPath={modelPath} gltf={gltf} setGltf={setGltf} playAnimationIndex={playAnimationIndex} modelPosition={modelPosition} setLoadingProgress={setLoadingProgress} loadingProgress={loadingProgress} />
+                <AnimatedModel 
+                    modelPath={modelPath} 
+                    gltf={gltf} 
+                    setGltf={setGltf} 
+                    playAnimationIndex={playAnimationIndex} 
+                    modelPosition={modelPosition} 
+                    setLoadingProgress={setLoadingProgress} 
+                    loadingProgress={loadingProgress} 
+                />
             </Canvas>
         </>
     );
@@ -189,65 +202,107 @@ const AnimatedModel = ({ gltf,setGltf,modelPath, playAnimationIndex, modelPositi
     const mixerRef = useRef();
     const [animations, setAnimations] = useState([]);
 
+    // Debugging: Log when AnimatedModel mounts and modelPath changes
     useEffect(() => {
+        console.log("AnimatedModel component mounted. Loading model from:", modelPath);
         const loader = new GLTFLoader();
 
         // Set up Draco Loader
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+        console.log("DracoLoader decoder path set to:", 'https://www.gstatic.com/draco/v1/decoders/');
 
-        loader.setDRACOLoader(dracoLoader);  // Attach Draco loader to the GLTF loader
+        loader.setDRACOLoader(dracoLoader); 
 
         loader.load(
             modelPath,
             (gltfData) => {
+                console.log("Model loaded successfully!", gltfData);
                 gltfData.scene.rotation.y = Math.PI; // Rotate 180° globally
                 setGltf(gltfData);
+                console.log("gltf state updated with loaded model.");
             },
             (progress) => {
                 // Handle progress here
                 if (progress.total > 0) {
                     const loadProgress = (progress.loaded / progress.total) * 100; // Progress as percentage
                     setLoadingProgress(loadProgress);  // Update progress state
+                    // console.log(`Loading progress: ${loadProgress.toFixed(2)}%`); // Log progress
+                } else {
+                    console.log("Loading progress: total is 0, loaded:", progress.loaded);
                 }
             },
             (error) => {
-                console.error('Error loading model', error);
+                console.error('Error loading model:', error);
             }
         );
-    }, [modelPath, setLoadingProgress]);
 
+        // Cleanup function for GLTFLoader (optional, but good practice if component unmounts quickly)
+        return () => {
+            // You might want to dispose of the loader or any loaded assets here if necessary
+            // For now, simple console log for unmount
+            console.log("AnimatedModel component unmounted or modelPath changed, cleaning up loader.");
+        };
+
+    }, [modelPath, setLoadingProgress, setGltf]); // Added setGltf to dependencies
+
+    // Debugging: Log when gltf state changes
     useEffect(() => {
-        if (gltf && gltf.animations && gltf.animations.length) {
-            mixerRef.current = new AnimationMixer(gltf.scene);
-            const loadedAnimations = gltf.animations.map((clip) => {
-                const action = mixerRef.current.clipAction(clip);
-                action.setLoop(THREE.LoopRepeat, Infinity);
-                return action;
-            });
-            setAnimations(loadedAnimations);  // Store the animation actions
+        if (gltf) {
+            console.log("gltf state in AnimatedModel changed:", gltf);
+            if (gltf.animations && gltf.animations.length) {
+                mixerRef.current = new AnimationMixer(gltf.scene);
+                const loadedAnimations = gltf.animations.map((clip) => {
+                    const action = mixerRef.current.clipAction(clip);
+                    action.setLoop(THREE.LoopRepeat, Infinity);
+                    return action;
+                });
+                setAnimations(loadedAnimations);  // Store the animation actions
+                console.log("Animations initialized:", loadedAnimations.length, "animations found.");
+            } else {
+                console.log("No animations found in GLTF data.");
+            }
+        } else {
+            console.log("gltf state is null in AnimatedModel.");
         }
     }, [gltf]);
 
     useFrame((state, delta) => {
         if (mixerRef.current) {
-            mixerRef.current.update(delta);  // Updates animation
+            mixerRef.current.update(delta); 
         }
+        // Debugging: Log model position and rotation if needed
+        // if (modelRef.current) {
+        //     console.log("Model position:", modelRef.current.position.x, modelRef.current.position.y, modelRef.current.position.z);
+        // }
     });
 
+    // Debugging: Log when animations or playAnimationIndex changes
     useEffect(() => {
         if (animations.length > 0 && playAnimationIndex !== null) {
+            console.log(`Attempting to play animation index: ${playAnimationIndex}`);
             animations.forEach((action) => action.stop());
             const selectedAnimation = animations[playAnimationIndex];
             if (selectedAnimation) {
                 selectedAnimation.play();
+                console.log(`Animation ${playAnimationIndex} started.`);
+            } else {
+                console.warn(`Animation at index ${playAnimationIndex} not found.`);
             }
+        } else if (animations.length === 0) {
+            console.log("No animations available to play yet.");
+        } else if (playAnimationIndex === null) {
+            console.log("playAnimationIndex is null, no animation triggered.");
         }
     }, [animations, playAnimationIndex]);
 
+    // Debugging: Log render condition
+    console.log("Rendering primitive? gltf:", !!gltf, "loadingProgress:", loadingProgress);
+
+
     return (
         <>
-            {(gltf && loadingProgress == 100) && (
+            {(gltf && loadingProgress >= 99.99) && ( // Changed to >= 99.99 for robustness
                 <primitive
                     ref={modelRef}
                     object={gltf.scene}
