@@ -1,8 +1,8 @@
-# The Portfolio Website
+# My Portfolio Website
 
 Hi! Welcome to my new 3D Web Developer portfolio! This is a personal project where I showcase my skills, work, and experience in web development. 
 
-**Check it live**: 
+**Check it live**: https://omarruizramos.netlify.app/
 
 ## Technologies Used
 
