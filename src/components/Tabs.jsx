@@ -8,11 +8,11 @@ const Tabs = () => {
 
   // Array of tab titles and content
   const tabs = [
-    { title: '1', content: '3D visualization featuring a custom OBJ model, mouse-responsive shader effects, dynamic sprite-based background, vertex displacement, color shading, and interactivity to create a visually appealing and engaging experience.', link:'https://github.com/oruizramos/3D-Project' },
+    { title: '1', content: '3D visualization featuring a custom OBJ model, mouse-responsive shader effects, dynamic sprite-based background, vertex displacement, color shading, and interactivity to create a visually appealing and engaging experience.', link:'https://3dmodelshattering.netlify.app/' },
    
-    { title: '2', content: 'Simple browser-based 3D simulation that showcases real-time physics interactions, using Rapier for physics computations. Users can interact with a dynamic environment where multiple objects respond to physics laws, and a custom 3D cursor enhances the immersive experience', link:'https://github.com/oruizramos/3D-experimentation' },
+    { title: '2', content: 'Simple browser-based 3D simulation that showcases real-time physics interactions, using Rapier for physics computations. Users can interact with a dynamic environment where multiple objects respond to physics laws, and a custom 3D cursor enhances the immersive experience', link:'https://3d-physics-experiment.netlify.app/' },
 
-    { title: '3', content: 'Visual experiment built using a custom MeshLine implementation, featuring animated 3D lines rendered using custom geometry, shaders, and materials, along with post-processing effects such as bloom to enhance visual aesthetics.', link:'https://github.com/oruizramos/ThreeJS-Art-Generation' },
+    { title: '3', content: 'Visual experiment built using a custom MeshLine implementation, featuring animated 3D lines rendered using custom geometry, shaders, and materials, along with post-processing effects such as bloom to enhance visual aesthetics.', link:'https://threejsartgeneration.netlify.app/' },
    
   ];
 
