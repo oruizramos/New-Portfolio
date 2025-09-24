@@ -130,7 +130,7 @@ const NavbarHome = ({ secRef, isMobile }) => {
 
           <div className="hero-container">
   <div className="hero-content">
-    <p className="hero-text">3D Front End Developer</p>
+    <p className="hero-text">QA Specialist/Developer(Web)</p>
     
     {/* Typewriter effect  */}
     <h1 className="hero-heading gradient-title1 g-grey">
